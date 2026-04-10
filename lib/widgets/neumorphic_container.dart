@@ -10,14 +10,14 @@ class NeumorphicContainer extends StatelessWidget {
   final bool isPressed;
 
   const NeumorphicContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.borderRadius = 24.0,
     this.padding = const EdgeInsets.all(20.0),
     this.margin = EdgeInsets.zero,
     this.backgroundColor = AppColors.surface,
     this.isPressed = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,27 +30,27 @@ class NeumorphicContainer extends StatelessWidget {
         boxShadow: isPressed
             ? [
                 BoxShadow(
-                  color: AppColors.shadowDark.withOpacity(0.5),
+                  color: AppColors.shadowDark.withValues(alpha: 0.5),
                   offset: const Offset(insetDistance, insetDistance),
                   blurRadius: 10,
                   spreadRadius: -2,
                 ),
-                BoxShadow(
+                const BoxShadow(
                   color: AppColors.shadowLight,
-                  offset: const Offset(-insetDistance, -insetDistance),
+                  offset: Offset(-insetDistance, -insetDistance),
                   blurRadius: 10,
                   spreadRadius: -2,
                 ),
               ]
             : [
                 BoxShadow(
-                  color: AppColors.shadowDark.withOpacity(0.6),
+                  color: AppColors.shadowDark.withValues(alpha: 0.6),
                   offset: const Offset(8, 8),
                   blurRadius: 16,
                 ),
-                BoxShadow(
+                const BoxShadow(
                   color: AppColors.shadowLight,
-                  offset: const Offset(-8, -8),
+                  offset: Offset(-8, -8),
                   blurRadius: 16,
                 ),
               ],

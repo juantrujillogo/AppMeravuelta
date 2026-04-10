@@ -1,0 +1,36 @@
+﻿Analyzing ventasia_marketplace...                               
+
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\automation_settings_screen.dart:105:48 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\screens\automation_settings_screen.dart:120:17 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\buyer_chat_screen.dart:24:54 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\screens\home_screen.dart:6:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:79:49 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:106:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\home_screen.dart:145:51 - deprecated_member_use
+   info - Use a 'SizedBox' to add whitespace to a layout - lib\screens\home_screen.dart:198:22 - sized_box_for_whitespace
+   info - Use 'const' with the constructor to improve performance - lib\screens\home_screen.dart:332:11 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\home_screen.dart:334:20 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\home_screen.dart:336:22 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\screens\home_screen.dart:339:27 - prefer_const_literals_to_create_immutables
+   info - Parameter 'key' could be a super parameter - lib\screens\login_screen.dart:8:9 - use_super_parameters
+   info - Use 'const' with the constructor to improve performance - lib\screens\login_screen.dart:30:15 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\login_screen.dart:77:21 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\screens\login_screen.dart:78:35 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen.dart:185:43 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\login_screen.dart:211:39 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\vendor_carts_screen.dart:40:44 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\screens\vendor_clients_screen.dart:6:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\vendor_clients_screen.dart:24:58 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\vendor_clients_screen.dart:47:53 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\vendor_clients_screen.dart:47:94 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\screens\vendor_dashboard_screen.dart:8:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\vendor_dashboard_screen.dart:103:44 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\vendor_dashboard_screen.dart:105:68 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\screens\vendor_dashboard_screen.dart:129:46 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\screens\vendor_main_screen.dart:10:9 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\widgets\neumorphic_container.dart:12:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\neumorphic_container.dart:33:47 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\widgets\neumorphic_container.dart:38:17 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\widgets\neumorphic_container.dart:47:47 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\widgets\neumorphic_container.dart:51:17 - prefer_const_constructors
+

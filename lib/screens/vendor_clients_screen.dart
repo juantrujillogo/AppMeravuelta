@@ -3,7 +3,7 @@ import 'package:ventasia_marketplace/theme/app_colors.dart';
 import 'package:ventasia_marketplace/widgets/neumorphic_container.dart';
 
 class VendorClientsScreen extends StatelessWidget {
-  const VendorClientsScreen({Key? key}) : super(key: key);
+  const VendorClientsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class VendorClientsScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 24,
-                  backgroundColor: AppColors.primaryBlue.withOpacity(0.1),
+                  backgroundColor: AppColors.primaryBlue.withValues(alpha: 0.1),
                   child: const Icon(Icons.person, color: AppColors.primaryBlue),
                 ),
                 const SizedBox(width: 16),
@@ -44,7 +44,7 @@ class VendorClientsScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: isVip ? AppColors.tagVip.withOpacity(0.1) : AppColors.tagFrequent.withOpacity(0.1),
+                    color: isVip ? AppColors.tagVip.withValues(alpha: 0.1) : AppColors.tagFrequent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isVip ? AppColors.tagVip : AppColors.tagFrequent,

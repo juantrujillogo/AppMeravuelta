@@ -5,7 +5,7 @@ import 'package:ventasia_marketplace/widgets/neumorphic_container.dart';
 import 'package:ventasia_marketplace/logic/automation_engine.dart';
 
 class VendorDashboardScreen extends StatelessWidget {
-  const VendorDashboardScreen({Key? key}) : super(key: key);
+  const VendorDashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +100,9 @@ class VendorDashboardScreen extends StatelessWidget {
             height: 120,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: AppColors.primaryBlue.withOpacity(0.05),
+              color: AppColors.primaryBlue.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primaryBlueLight.withOpacity(0.5), width: 2),
+              border: Border.all(color: AppColors.primaryBlueLight.withValues(alpha: 0.5), width: 2),
             ),
             child: const Center(
               child: Icon(Icons.show_chart, color: AppColors.primaryBlue, size: 48),
@@ -126,7 +126,7 @@ class VendorDashboardScreen extends StatelessWidget {
               width: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.tagFrequent.withOpacity(0.05),
+                color: AppColors.tagFrequent.withValues(alpha: 0.05),
                 border: Border.all(color: AppColors.tagFrequent, width: 8),
               ),
               child: const Center(

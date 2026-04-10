@@ -7,7 +7,7 @@ import 'package:ventasia_marketplace/screens/automation_settings_screen.dart';
 import 'package:ventasia_marketplace/screens/login_screen.dart';
 
 class VendorMainScreen extends StatefulWidget {
-  const VendorMainScreen({Key? key}) : super(key: key);
+  const VendorMainScreen({super.key});
 
   @override
   State<VendorMainScreen> createState() => _VendorMainScreenState();

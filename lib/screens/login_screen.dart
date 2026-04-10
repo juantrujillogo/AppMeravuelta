@@ -3,9 +3,10 @@ import 'package:ventasia_marketplace/theme/app_colors.dart';
 import 'package:ventasia_marketplace/widgets/neumorphic_container.dart';
 import 'package:ventasia_marketplace/screens/home_screen.dart';
 import 'package:ventasia_marketplace/screens/vendor_main_screen.dart';
+import 'package:ventasia_marketplace/services/notification_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -15,6 +16,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoginTab = true;
   bool isPasswordObscured = true;
   String selectedRole = 'Comprador';
+
+  @override
+  void initState() {
+    super.initState();
+    // Requerir permisos de notificación al arrancar la UI
+    NotificationService().requestPermissions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 20),
               // Logo placeholder
-              Icon(Icons.shopping_bag_rounded,
+              const Icon(Icons.shopping_bag_rounded,
                   size: 64, color: AppColors.primaryBlue),
               const SizedBox(height: 16),
               const Text(
@@ -74,10 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 32),
 
                     // Inputs
-                    TextField(
+                    const TextField(
                       decoration: InputDecoration(
                         hintText: 'Correo electrónico',
-                        prefixIcon: const Icon(Icons.email_outlined,
+                        prefixIcon: Icon(Icons.email_outlined,
                             color: AppColors.textSecondary),
                       ),
                     ),
@@ -182,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
           boxShadow: isActive
               ? [
                   BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 4,
                       offset: const Offset(0, 2)),
                 ]
@@ -208,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primaryBlue.withOpacity(0.1)
+              ? AppColors.primaryBlue.withValues(alpha: 0.1)
               : AppColors.surface,
           borderRadius: BorderRadius.circular(24.0),
           border: Border.all(

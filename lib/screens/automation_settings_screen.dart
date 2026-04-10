@@ -5,7 +5,7 @@ import 'package:ventasia_marketplace/widgets/neumorphic_container.dart';
 import 'package:ventasia_marketplace/logic/automation_engine.dart';
 
 class AutomationSettingsScreen extends StatelessWidget {
-  const AutomationSettingsScreen({Key? key}) : super(key: key);
+  const AutomationSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class AutomationSettingsScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryBlue.withOpacity(0.1),
+                  color: AppColors.primaryBlue.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: AppColors.primaryBlue),
@@ -117,7 +117,7 @@ class AutomationSettingsScreen extends StatelessWidget {
               Switch(
                 value: value,
                 onChanged: onChanged,
-                activeColor: AppColors.primaryBlue,
+                activeThumbColor: AppColors.primaryBlue,
               ),
             ],
           ),

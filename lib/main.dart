@@ -4,7 +4,12 @@ import 'package:ventasia_marketplace/theme/app_theme.dart';
 import 'package:ventasia_marketplace/screens/login_screen.dart';
 import 'package:ventasia_marketplace/logic/automation_engine.dart';
 
-void main() {
+import 'package:ventasia_marketplace/services/notification_service.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AutomationEngine(),
@@ -14,7 +19,7 @@ void main() {
 }
 
 class SmartCartAIApp extends StatelessWidget {
-  const SmartCartAIApp({Key? key}) : super(key: key);
+  const SmartCartAIApp({super.key});
 
   @override
   Widget build(BuildContext context) {

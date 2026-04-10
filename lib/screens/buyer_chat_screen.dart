@@ -5,7 +5,7 @@ import 'package:ventasia_marketplace/widgets/neumorphic_container.dart';
 import 'package:ventasia_marketplace/logic/automation_engine.dart';
 
 class BuyerChatScreen extends StatelessWidget {
-  const BuyerChatScreen({Key? key}) : super(key: key);
+  const BuyerChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class BuyerChatScreen extends StatelessWidget {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundColor: AppColors.primaryBlue.withOpacity(0.2),
+              backgroundColor: AppColors.primaryBlue.withValues(alpha: 0.2),
               child: const Icon(Icons.support_agent, color: AppColors.primaryBlue),
             ),
             const SizedBox(width: 12),

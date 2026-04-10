@@ -22,6 +22,49 @@ class AutomationEngine extends ChangeNotifier {
     },
   ];
 
+  // Buyer Notifications State
+  int unreadBuyerNotifications = 0;
+  List<String> buyerNotifications = [];
+
+  // Vendor Carts State
+  List<Map<String, dynamic>> pendingCarts = [];
+
+  void abandonCart(String itemName, double price) {
+    pendingCarts.add({
+      'id': 1042 + abandonedCarts,
+      'client': 'Tú (Comprador Actual)',
+      'product': itemName,
+      'value': price,
+      'status': 'Sin enviar'
+    });
+    abandonedCarts += 1;
+    notifyListeners();
+  }
+
+  void sendDiscountToCart(int cartIndex, int discountPercent) {
+    if (cartIndex >= 0 && cartIndex < pendingCarts.length) {
+      pendingCarts[cartIndex]['status'] = 'Enviado';
+      buyerChatMessages.add({
+        "sender": "bot",
+        "text":
+            "¡No te lo pierdas! Aquí tienes un $discountPercent% de descuento para completar tu compra ahora.",
+        "isDiscount": true,
+        "discountValue": discountPercent,
+      });
+
+      // Add to notifications
+      buyerNotifications.insert(0, "¡Tienes un nuevo descuento del $discountPercent% esperándote!");
+      unreadBuyerNotifications++;
+
+      notifyListeners();
+    }
+  }
+
+  void markNotificationsAsRead() {
+    unreadBuyerNotifications = 0;
+    notifyListeners();
+  }
+
   void toggleQuickRecovery(bool value) {
     isQuickRecoveryEnabled = value;
     notifyListeners();
