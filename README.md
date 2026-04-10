@@ -1,3 +1,3 @@
-# ventasia_marketplace
+# SmartCartAI
 
 A new Flutter project.
