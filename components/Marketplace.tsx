@@ -1,22 +1,29 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ShoppingCart, Search, Menu, User } from 'lucide-react';
 import Link from 'next/link';
 import { useCartSimulation } from './CartSimulationContext';
-import { products } from '../lib/products';
+import { Product } from '../lib/products'; // Use the interface
 
-export default function Marketplace() {
-  const [cartCount, setCartCount] = useState(0);
+interface MarketplaceProps {
+  products: Product[];
+}
+
+export default function Marketplace({ products }: MarketplaceProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Categorías");
-  const { startCartSimulation } = useCartSimulation();
+  const { cartItems, setIsCartOpen, addToCart } = useCartSimulation();
 
+  const productsGridRef = useRef<HTMLDivElement>(null);
 
-  const handleAddToCart = () => {
-    setCartCount(prev => prev + 1);
-    startCartSimulation();
+  const executeSearch = () => {
+    if (productsGridRef.current) {
+      productsGridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
+
+  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = selectedCategory === "Categorías" || product.category === selectedCategory;
@@ -26,7 +33,7 @@ export default function Marketplace() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      {/* Header (with cart counter) */}
+      {/* Cabecera (con contador del carrito) */}
       <header className="bg-white border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -41,15 +48,18 @@ export default function Marketplace() {
                 <button className="hover:text-purple-600 transition-colors">Ayuda</button>
               </div>
               <div className="flex items-center gap-4">
-                <button className="text-gray-600 hover:text-purple-600 transition-colors bg-gray-100 hover:bg-purple-50 p-2 rounded-full hidden sm:block">
+                <Link href="/marketplace/profile" className="text-gray-600 hover:text-purple-600 transition-colors bg-gray-100 hover:bg-purple-50 p-2 rounded-full hidden sm:block">
                   <User className="h-5 w-5" />
-                </button>
+                </Link>
 
-                {/* Cart Button */}
-                <button className="relative text-gray-600 hover:text-purple-600 transition-colors bg-gray-100 hover:bg-purple-50 p-2 rounded-full">
+                {/* Botón del Carrito */}
+                <button 
+                  onClick={() => setIsCartOpen(true)}
+                  className="relative text-gray-600 hover:text-purple-600 transition-colors bg-gray-100 hover:bg-purple-50 p-2 rounded-full"
+                >
                   <ShoppingCart className="h-5 w-5" />
 
-                  {/* Cart Counter */}
+                  {/* Contador del Carrito */}
                   {cartCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm animate-in zoom-in duration-200">
                       {cartCount}
@@ -62,9 +72,9 @@ export default function Marketplace() {
         </div>
       </header>
 
-      {/* Main Banner */}
+      {/* Banner Principal */}
       <div className="bg-purple-700 text-white text-center py-16 px-4 relative overflow-hidden">
-        {/* Decorative background elements */}
+        {/* Elementos decorativos de fondo */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
           <div className="absolute -top-24 -left-24 w-64 h-64 rounded-full bg-purple-500 mix-blend-multiply filter blur-3xl"></div>
           <div className="absolute top-12 -right-12 w-72 h-72 rounded-full bg-purple-800 mix-blend-multiply filter blur-3xl"></div>
@@ -78,7 +88,7 @@ export default function Marketplace() {
             Encuentra los mejores recursos y herramientas para llevar tu negocio al siguiente nivel.
           </p>
 
-          {/* Search Bar */}
+          {/* Barra de Búsqueda */}
           <div className="max-w-3xl mx-auto bg-white rounded-xl p-2 flex flex-col sm:flex-row shadow-2xl items-center ring-1 ring-black/5">
             <div className="w-full sm:w-auto relative">
               <select
@@ -103,12 +113,21 @@ export default function Marketplace() {
                 placeholder="¿Qué estás buscando para tu empresa?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    executeSearch();
+                  }
+                }}
                 className="w-full bg-transparent text-gray-900 px-2 py-1 focus:outline-none placeholder-gray-400 font-medium"
               />
             </div>
 
             <button
-              onClick={(e) => e.preventDefault()}
+              onClick={(e) => {
+                e.preventDefault();
+                executeSearch();
+              }}
               className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg w-full sm:w-auto mt-2 sm:mt-0 whitespace-nowrap"
             >
               Buscar
@@ -117,31 +136,35 @@ export default function Marketplace() {
         </div>
       </div>
 
-      {/* Main Content (Product Grid) */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+      {/* Contenido Principal (Cuadrícula de Productos) */}
+      <main ref={productsGridRef} className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full scroll-mt-16">
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Recomendados para ti</h2>
-            <p className="text-gray-500 mt-1 font-medium">Selección especial de productos destacados</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+              {searchQuery ? 'Resultados de Búsqueda' : 'Recomendados para ti'}
+            </h2>
+            <p className="text-gray-500 mt-1 font-medium">
+              {searchQuery ? `Mostrando productos para "${searchQuery}"` : 'Selección especial de productos destacados'}
+            </p>
           </div>
           <button className="text-blue-600 hover:text-blue-800 font-bold text-sm hidden sm:block transition-colors">
             Ver todo el catálogo →
           </button>
         </div>
 
-        {/* Grid */}
+        {/* Cuadrícula */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
           {filteredProducts.map((product) => (
             <Link href={`/marketplace/product/${product.id}`} key={product.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 hover:border-purple-200 transition-all duration-300 group flex flex-col cursor-pointer ring-1 ring-black/5 hover:ring-purple-500/20">
               <div className="relative aspect-[4/3] sm:aspect-square bg-gray-50 overflow-hidden flex items-center justify-center">
-                {/* Image */}
+                {/* Imagen */}
                 <img
                   src={product.image}
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                 />
 
-                {/* Badges Container */}
+                {/* Contenedor de Etiquetas (Badges) */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2 items-start">
                   {product.discount && (
                     <span className="bg-gradient-to-r from-red-500 to-rose-600 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-full shadow-md uppercase tracking-wide">
@@ -165,7 +188,7 @@ export default function Marketplace() {
                   {product.name}
                 </h3>
 
-                {/* Proveedor Preview */}
+                {/* Vista previa del Proveedor */}
                 <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-gray-500">
                   <User className="w-3 h-3 text-purple-400" />
                   Vendidor por: <span className="text-purple-700">{product.vendorName}</span>
@@ -183,12 +206,12 @@ export default function Marketplace() {
                     </span>
                   </div>
 
-                  {/* Add Button */}
+                  {/* Botón de Agregar */}
                   <button
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      handleAddToCart();
+                      addToCart(product);
                     }}
                     className="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-[0_4px_14px_0_rgba(168,85,247,0.39)] hover:shadow-[0_6px_20px_rgba(168,85,247,0.23)] text-sm z-10"
                   >

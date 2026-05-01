@@ -16,12 +16,12 @@ export default function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { alertTriggered } = useCartSimulation();
 
-  // Autoscroll to bottom
+  // Desplazamiento automático hacia abajo (Autoscroll)
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isOpen]);
 
-  // Cart Recovery Logic
+  // Lógica de Recuperación de Carrito
   useEffect(() => {
     if (alertTriggered && !hasRecovered) {
       setIsOpen(true);
@@ -33,56 +33,50 @@ export default function Chatbot() {
     }
   }, [alertTriggered, hasRecovered]);
 
-  const generateLocalResponse = (message: string): string => {
-    const text = message.toLowerCase();
-    
-    if (text.includes('silla') || text.includes('ergonomica') || text.includes('ergonómica')) {
-      return "Nuestra Silla Ergonómica Premium soporta hasta 150kg, tiene malla transpirable importada y cuenta con ajuste lumbar 3D. ¿Te gustaría saber algo en particular sobre ella?";
-    }
-    if (text.includes('monitor') || text.includes('pantalla') || text.includes('4k')) {
-      return "El monitor UltraWide 34\" es perfecto para productividad. Tiene un panel IPS con colores sRGB 99% y tasa de refresco ultra fluida de 144Hz.";
-    }
-    if (text.includes('teclado') || text.includes('mecanico') || text.includes('mecánico')) {
-      return "El Teclado Mecánico Inalámbrico usa switches silenciosos y puede conectarse por Bluetooth 5.0 o conector USB. ¡Su batería dura meses!";
-    }
-    if (text.includes('escritorio') || text.includes('elevable')) {
-      return "El escritorio automático tiene motores duales y soporta hasta 120kg. Puedes preconfigurar 4 alturas distintas en la memoria.";
-    }
-    if (text.includes('precio') || text.includes('costo') || text.includes('vale')) {
-      return "Nuestros precios varían por producto, pero siempre puedes revisar el detalle exacto e impuestos al hacer clic sobre cualquier ítem o yendo a la pasarela de pago segura.";
-    }
-    if (text.includes('descuento') || text.includes('cupon') || text.includes('promocion')) {
-      return "Los descuentos activos aplican directamente. Sin embargo, tenemos una promoción si abandonas el carrito... ¡Ups, no debí decir eso! (Prueba finalizando tu compra usando el código RECUPERA10).";
-    }
-    if (text.includes('envio') || text.includes('envío') || text.includes('tiempo')) {
-      return "Tenemos opciones de envío Flex (24-48 horas) para la mayoría de los accesorios, y envíos regulares (5-7 días) para mobiliario pesado como escritorios.";
-    }
-    if (text.includes('garantia') || text.includes('garantía') || text.includes('devolver')) {
-      return "Estás protegido. Todos los productos cuentan con 1 año de garantía extendida por la tienda, y 30 días de satisfacción total (devolución sin preguntas).";
-    }
-    if (text.includes('gracias') || text.includes('excelente') || text.includes('ok')) {
-      return "¡De nada! Aquí sigo a la orden.";
-    }
-    if (text.includes('hola') || text.includes('buenas')) {
-      return "¡Hola de nuevo! ¿Te ayudo a buscar algún recurso para tu oficina?";
-    }
-    
-    // Default fallback
-    return "¡Qué interesante! Dado que soy una demo local, solo conozco sobre sillas, monitores, escritorios, teclados, envíos y garantías. ¿Qué te gustaría saber más a fondo?";
-  };
-
-  const handleSend = () => {
+  const handleSend = async () => {
     if(!inputText.trim()) return;
     
     const userMsg = inputText.trim();
-    setMessages(prev => [...prev, { sender: 'user', text: userMsg }]);
+    // Agregamos el mensaje del usuario inmediatamente
+    const newMessages: Message[] = [...messages, { sender: 'user', text: userMsg }];
+    setMessages(newMessages);
     setInputText("");
 
-    // Simulate AI thinking delay
-    setTimeout(() => {
-      const botResponse = generateLocalResponse(userMsg);
-      setMessages(prev => [...prev, { sender: 'bot', text: botResponse }]);
-    }, 1000);
+    // Agregamos un mensaje temporal de "escribiendo..." (opcional pero recomendado)
+    setMessages(prev => [...prev, { sender: 'bot', text: 'Escribiendo...' }]);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Reemplazar el mensaje de "Escribiendo..." con la respuesta real
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { sender: 'bot', text: data.reply };
+          return updated;
+        });
+      } else {
+        // En caso de error (por ejemplo si falta la llave)
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { sender: 'bot', text: 'Error: ' + (data.error || 'Algo salió mal.') };
+          return updated;
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { sender: 'bot', text: 'Error de conexión. Asegúrate de tener el servidor corriendo y la llave configurada.' };
+        return updated;
+      });
+    }
   };
 
   if (!isOpen) {
@@ -102,7 +96,7 @@ export default function Chatbot() {
 
   return (
     <div className="fixed bottom-6 right-6 w-80 sm:w-96 h-[500px] bg-white/95 backdrop-blur-3xl border border-gray-100 shadow-[0_10px_40px_rgba(0,0,0,0.2)] rounded-3xl flex flex-col z-50 overflow-hidden font-sans ring-1 ring-black/5">
-      {/* Header */}
+      {/* Cabecera */}
       <div className="bg-gradient-to-r from-purple-700 to-blue-600 p-4 text-white flex justify-between items-center shrink-0">
         <div className="flex items-center gap-3">
           <div className="bg-white/20 p-2 rounded-xl backdrop-blur-md">
@@ -120,7 +114,7 @@ export default function Chatbot() {
         </button>
       </div>
 
-      {/* Messages */}
+      {/* Mensajes */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
         {messages.map((msg, i) => (
           <div key={i} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -136,7 +130,7 @@ export default function Chatbot() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Área de Entrada de Texto */}
       <div className="p-4 bg-white/80 border-t border-gray-100 shrink-0 backdrop-blur-md">
         <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex items-center gap-2">
           <input

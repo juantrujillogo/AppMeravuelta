@@ -2,27 +2,43 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { products } from '../../../../lib/products';
+import { Product } from '../../../../lib/products';
 import { useCartSimulation } from '../../../../components/CartSimulationContext';
 import { ArrowLeft, Star, Clock, ShieldCheck, Truck, ShoppingCart, Info, User } from 'lucide-react';
 
 export default function ProductDetails({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const { startCartSimulation } = useCartSimulation();
+  const { addToCart } = useCartSimulation();
   const [adding, setAdding] = useState(false);
-  
-  const product = products.find(p => p.id === parseInt(params.id));
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  React.useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        // Find the product matching the string id from params
+        const found = data.find((p: Product) => p.id.toString() === params.id);
+        setProduct(found || null);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching product:", err);
+        setLoading(false);
+      });
+  }, [params.id]);
+
+  if (loading) return <div className="p-20 text-center text-xl font-bold text-gray-500">Cargando producto...</div>;
   if (!product) return <div className="p-20 text-center text-xl font-bold">Producto no encontrado</div>;
 
   const handleCheckout = () => {
-    startCartSimulation();
+    addToCart(product);
     router.push('/marketplace/checkout');
   };
 
   const handleCartAdd = () => {
     setAdding(true);
-    startCartSimulation();
+    addToCart(product);
     setTimeout(() => {
       setAdding(false);
     }, 1000);

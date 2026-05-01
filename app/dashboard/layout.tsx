@@ -3,13 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Zap, Settings, BarChart } from 'lucide-react';
+import { Home, Zap, Settings, BarChart, Package } from 'lucide-react';
+import SellerChatbot from '../../components/SellerChatbot';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const navItems = [
     { name: 'Inicio', href: '/dashboard', icon: Home },
+    { name: 'Productos', href: '/dashboard/products', icon: Package },
     { name: 'Automatizaciones', href: '/dashboard/automations', icon: Zap },
     { name: 'Analíticas', href: '/dashboard/analytics', icon: BarChart },
     { name: 'Configuración', href: '/dashboard/settings', icon: Settings },
@@ -17,8 +19,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex h-screen bg-gray-50 font-sans text-gray-900">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      {/* Barra lateral (Sidebar) */}
+      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col z-10">
         <div className="p-6 border-b border-gray-100 flex items-center justify-center">
           <span className="text-2xl font-extrabold text-purple-700 tracking-tight">VentasIA</span>
         </div>
@@ -49,9 +51,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-auto flex flex-col">
+      {/* Área Principal de Contenido */}
+      <main className="flex-1 overflow-auto flex flex-col relative">
         {children}
+        
+        {/* Asistente Privado del Vendedor */}
+        <SellerChatbot />
       </main>
     </div>
   );

@@ -17,7 +17,7 @@ export default function DashboardHome() {
         </div>
       </header>
 
-      {/* Cart Abandonment Alert */}
+      {/* Alerta de Abandono de Carrito */}
       {alertTriggered && (
         <div className="mb-8 relative overflow-hidden bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl shadow-lg border border-amber-400 p-1 animate-in slide-in-from-top-4 fade-in duration-500">
           <div className="bg-white/10 backdrop-blur-sm px-6 py-5 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
@@ -51,7 +51,7 @@ export default function DashboardHome() {
         </div>
       )}
 
-      {/* Stats mockup */}
+      {/* Secciones de Estadísticas (Mockup) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard title="Ventas Totales" value="$12,450" icon={DollarSign} trend="+14%" color="text-green-600" bg="bg-green-100" />
         <StatCard title="Visitas hoy" value="1,240" icon={Users} trend="+5%" color="text-blue-600" bg="bg-blue-100" />
@@ -59,7 +59,7 @@ export default function DashboardHome() {
         <StatCard title="Carritos Recuperados" value="18" icon={TrendingUp} trend="+22%" color="text-purple-600" bg="bg-purple-100" />
       </div>
 
-      {/* Basic Graph Placeholder */}
+      {/* Contenedor de Gráfico Básico */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 h-96 flex flex-col justify-center items-center">
         <Activity className="h-16 w-16 text-gray-200 mb-4" />
         <h3 className="text-lg font-bold text-gray-400">Gráfico de Ventas Mensuales</h3>

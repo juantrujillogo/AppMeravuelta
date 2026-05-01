@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle2, ArrowLeft, CreditCard, Lock, ShieldCheck } from 'lucide-react';
+import { useCartSimulation } from '../../../components/CartSimulationContext';
 
 export default function CheckoutPage() {
   const router = useRouter();
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { cartItems, cartTotal } = useCartSimulation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,22 +125,30 @@ export default function CheckoutPage() {
           <div className="bg-gray-100/50 p-8 rounded-3xl border border-gray-200 sticky top-10">
              <h2 className="text-xl font-bold text-gray-900 mb-6">Resumen de Cuenta</h2>
              
-             <div className="space-y-4 mb-6">
-                {/* Simulated Cart Item */}
-                <div className="flex gap-4 items-center">
-                  <div className="w-16 h-16 bg-white rounded-lg border border-gray-200 bg-[url('https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=400&q=80')] bg-cover bg-center shrink-0"></div>
-                  <div className="flex-1">
-                    <p className="font-bold text-gray-900 text-sm leading-tight">Producto Simulado (Demo)</p>
-                    <p className="text-xs text-gray-500 mt-1">Cant: 1</p>
+             <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
+                {cartItems.map((item) => (
+                  <div key={item.id} className="flex gap-4 items-center">
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      className="w-16 h-16 object-cover rounded-lg border border-gray-200 shrink-0"
+                    />
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-900 text-sm leading-tight line-clamp-2">{item.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">Cant: {item.quantity}</p>
+                    </div>
+                    <p className="font-bold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
                   </div>
-                  <p className="font-bold text-gray-900">$199.99</p>
-                </div>
+                ))}
+                {cartItems.length === 0 && (
+                  <p className="text-gray-500 text-sm italic">Tu carrito está vacío</p>
+                )}
              </div>
              
              <div className="border-t border-gray-200 pt-4 space-y-3">
                <div className="flex justify-between text-gray-600 text-sm">
                  <span>Subtotal</span>
-                 <span>$199.99</span>
+                 <span>${cartTotal.toFixed(2)}</span>
                </div>
                <div className="flex justify-between text-gray-600 text-sm">
                  <span>Envío (Express)</span>
@@ -146,11 +156,11 @@ export default function CheckoutPage() {
                </div>
                <div className="flex justify-between text-gray-600 text-sm">
                  <span>Impuestos</span>
-                 <span>$24.00</span>
+                 <span>${(cartTotal * 0.16).toFixed(2)}</span>
                </div>
                <div className="flex justify-between text-gray-900 font-extrabold text-xl pt-4 border-t border-gray-200 mt-4">
                  <span>Total</span>
-                 <span className="text-purple-600">$238.99</span>
+                 <span className="text-purple-600">${(cartTotal + 15 + cartTotal * 0.16).toFixed(2)}</span>
                </div>
              </div>
           </div>
