@@ -13,11 +13,17 @@ export default function ProductsManager() {
     fetch('/api/products')
       .then(res => res.json())
       .then(data => {
-        setProductsList(data);
+        if (Array.isArray(data)) {
+          setProductsList(data);
+        } else {
+          console.error("API did not return an array:", data);
+          setProductsList([]); // Evitar que rompa la aplicación si hay error en la DB
+        }
         setIsLoading(false);
       })
       .catch(err => {
         console.error("Error fetching products:", err);
+        setProductsList([]);
         setIsLoading(false);
       });
   }, []);
@@ -25,6 +31,36 @@ export default function ProductsManager() {
   // Estado del Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const [isGenerating, setIsGenerating] = useState(false);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+
+  const handleGenerateDescription = async () => {
+    const productName = nameRef.current?.value;
+    if (!productName) {
+      alert("Por favor escribe un nombre de producto primero.");
+      return;
+    }
+    
+    setIsGenerating(true);
+    try {
+      const res = await fetch('/api/generate-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productName })
+      });
+      const data = await res.json();
+      if (data.success && descriptionRef.current) {
+        descriptionRef.current.value = data.description;
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al generar descripción");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   // Estado del Menú Desplegable (Dropdown)
   const [activeDropdown, setActiveDropdown] = useState<number | string | null>(null);
@@ -299,6 +335,7 @@ export default function ProductsManager() {
                   <label className="block text-sm font-bold text-gray-700 mb-1">Nombre del producto</label>
                   <input
                     name="name"
+                    ref={nameRef}
                     required
                     defaultValue={editingProduct?.name || ''}
                     type="text"
@@ -360,11 +397,22 @@ export default function ProductsManager() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Descripción del producto</label>
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-sm font-bold text-gray-700">Descripción del producto</label>
+                    <button 
+                      type="button" 
+                      onClick={handleGenerateDescription}
+                      disabled={isGenerating}
+                      className="text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-100 px-2 py-1 rounded-md transition-colors flex items-center gap-1 disabled:opacity-50"
+                    >
+                      {isGenerating ? 'Generando...' : '✨ Mejorar con IA'}
+                    </button>
+                  </div>
                   <textarea
                     name="description"
+                    ref={descriptionRef}
                     defaultValue={editingProduct?.description || ''}
-                    rows={3}
+                    rows={4}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 font-medium outline-none resize-none"
                     placeholder="Escribe una descripción detallada..."
                   />

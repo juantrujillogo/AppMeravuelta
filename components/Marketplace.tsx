@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from 'react';
-import { ShoppingCart, Search, Menu, User } from 'lucide-react';
+import { ShoppingCart, Search, Menu, User, Laptop, Sofa, Headphones, Package, Camera, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useCartSimulation } from './CartSimulationContext';
 import { Product } from '../lib/products'; // Use the interface
@@ -13,9 +13,49 @@ interface MarketplaceProps {
 export default function Marketplace({ products }: MarketplaceProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Categorías");
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
   const { cartItems, setIsCartOpen, addToCart } = useCartSimulation();
 
   const productsGridRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsAnalyzingImage(true);
+
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = async () => {
+        const base64data = reader.result;
+
+        const response = await fetch('/api/visual-search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageBase64: (base64data as string).split(',')[1],
+            mimeType: file.type
+          })
+        });
+
+        const data = await response.json();
+        if (data.success && data.keyword) {
+          setSearchQuery(data.keyword);
+          setSelectedCategory("Categorías"); // Reset category to allow broad search
+          executeSearch(); // Scroll down to results
+        } else {
+          alert('No se pudo identificar la imagen.');
+        }
+        setIsAnalyzingImage(false);
+      };
+    } catch (error) {
+      console.error(error);
+      setIsAnalyzingImage(false);
+      alert('Hubo un error al analizar la imagen.');
+    }
+  };
 
   const executeSearch = () => {
     if (productsGridRef.current) {
@@ -53,7 +93,7 @@ export default function Marketplace({ products }: MarketplaceProps) {
                 </Link>
 
                 {/* Botón del Carrito */}
-                <button 
+                <button
                   onClick={() => setIsCartOpen(true)}
                   className="relative text-gray-600 hover:text-purple-600 transition-colors bg-gray-100 hover:bg-purple-50 p-2 rounded-full"
                 >
@@ -73,28 +113,29 @@ export default function Marketplace({ products }: MarketplaceProps) {
       </header>
 
       {/* Banner Principal */}
-      <div className="bg-purple-700 text-white text-center py-16 px-4 relative overflow-hidden">
-        {/* Elementos decorativos de fondo */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-64 h-64 rounded-full bg-purple-500 mix-blend-multiply filter blur-3xl"></div>
-          <div className="absolute top-12 -right-12 w-72 h-72 rounded-full bg-purple-800 mix-blend-multiply filter blur-3xl"></div>
+      <div className="relative bg-gradient-to-br from-purple-900 via-purple-700 to-indigo-800 text-white text-center py-24 px-4 overflow-hidden animate-gradient-x">
+        {/* Animated Background Shapes */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-96 h-96 rounded-full bg-purple-500 mix-blend-screen filter blur-[100px] animate-blob"></div>
+          <div className="absolute top-[20%] right-[-10%] w-96 h-96 rounded-full bg-indigo-500 mix-blend-screen filter blur-[100px] animate-blob" style={{animationDelay: "2s"}}></div>
+          <div className="absolute bottom-[-20%] left-[20%] w-96 h-96 rounded-full bg-pink-500 mix-blend-screen filter blur-[100px] animate-blob" style={{animationDelay: "4s"}}></div>
         </div>
 
         <div className="relative z-10">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-sm">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-purple-200 drop-shadow-sm">
             Marketplace Empresarial
           </h1>
-          <p className="text-lg md:text-xl text-purple-100 max-w-2xl mx-auto mb-10 font-light">
+          <p className="text-lg md:text-xl text-purple-100 max-w-2xl mx-auto mb-12 font-light">
             Encuentra los mejores recursos y herramientas para llevar tu negocio al siguiente nivel.
           </p>
 
-          {/* Barra de Búsqueda */}
-          <div className="max-w-3xl mx-auto bg-white rounded-xl p-2 flex flex-col sm:flex-row shadow-2xl items-center ring-1 ring-black/5">
-            <div className="w-full sm:w-auto relative">
+          {/* Barra de Búsqueda con Glassmorphism */}
+          <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-2 md:p-3 flex flex-col sm:flex-row shadow-2xl items-center border border-white/20">
+            <div className="w-full sm:w-auto relative mb-2 sm:mb-0">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full bg-transparent text-gray-700 font-medium px-4 py-3 sm:border-r border-gray-200 focus:outline-none appearance-none cursor-pointer pr-10"
+                className="w-full bg-transparent text-white font-medium px-4 py-3 sm:border-r border-white/20 focus:outline-none appearance-none cursor-pointer pr-10 [&>option]:text-gray-900"
               >
                 <option value="Categorías">Categorías</option>
                 <option value="Tecnología">Tecnología</option>
@@ -102,12 +143,12 @@ export default function Marketplace({ products }: MarketplaceProps) {
                 <option value="Accesorios">Accesorios</option>
               </select>
               <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                <svg className="h-4 w-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </div>
             </div>
 
-            <div className="flex-1 flex items-center px-4 py-3 sm:py-0 w-full border-t sm:border-t-0 border-gray-100 mt-2 sm:mt-0">
-              <Search className="h-5 w-5 text-gray-400 mr-2 flex-shrink-0" />
+            <div className="flex-1 flex items-center px-4 py-3 sm:py-0 w-full">
+              <Search className="h-5 w-5 text-white/70 mr-2 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="¿Qué estás buscando para tu empresa?"
@@ -119,19 +160,57 @@ export default function Marketplace({ products }: MarketplaceProps) {
                     executeSearch();
                   }
                 }}
-                className="w-full bg-transparent text-gray-900 px-2 py-1 focus:outline-none placeholder-gray-400 font-medium"
+                className="w-full bg-transparent text-white px-2 py-1 focus:outline-none placeholder-white/60 font-medium"
               />
             </div>
 
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                executeSearch();
-              }}
-              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-md hover:shadow-lg w-full sm:w-auto mt-2 sm:mt-0 whitespace-nowrap"
-            >
-              Buscar
-            </button>
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              ref={fileInputRef} 
+              onChange={handleImageUpload} 
+            />
+
+            <div className="flex w-full sm:w-auto mt-2 sm:mt-0 gap-2">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  fileInputRef.current?.click();
+                }}
+                disabled={isAnalyzingImage}
+                className="bg-white/20 hover:bg-white/30 text-white p-3 rounded-xl transition-all shadow-md flex items-center justify-center sm:flex-none disabled:opacity-50"
+                title="Buscar por imagen"
+              >
+                {isAnalyzingImage ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  executeSearch();
+                }}
+                className="bg-white text-purple-700 hover:bg-gray-50 active:scale-95 px-8 py-3 rounded-xl font-bold transition-all shadow-lg w-full sm:w-auto whitespace-nowrap"
+              >
+                Buscar
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Categories (Pills) */}
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
+             <button onClick={() => setSelectedCategory('Tecnología')} className={`px-4 py-2 rounded-full border border-white/20 backdrop-blur-sm text-sm font-medium transition-all flex items-center gap-2 ${selectedCategory === 'Tecnología' ? 'bg-white text-purple-700' : 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'}`}>
+               <Laptop className="w-4 h-4" /> Tecnología
+             </button>
+             <button onClick={() => setSelectedCategory('Mobiliario')} className={`px-4 py-2 rounded-full border border-white/20 backdrop-blur-sm text-sm font-medium transition-all flex items-center gap-2 ${selectedCategory === 'Mobiliario' ? 'bg-white text-purple-700' : 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'}`}>
+               <Sofa className="w-4 h-4" /> Mobiliario
+             </button>
+             <button onClick={() => setSelectedCategory('Accesorios')} className={`px-4 py-2 rounded-full border border-white/20 backdrop-blur-sm text-sm font-medium transition-all flex items-center gap-2 ${selectedCategory === 'Accesorios' ? 'bg-white text-purple-700' : 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'}`}>
+               <Headphones className="w-4 h-4" /> Accesorios
+             </button>
+             <button onClick={() => setSelectedCategory('Categorías')} className={`px-4 py-2 rounded-full border border-white/20 backdrop-blur-sm text-sm font-medium transition-all flex items-center gap-2 ${selectedCategory === 'Categorías' ? 'bg-white text-purple-700' : 'bg-white/10 text-white hover:bg-white/20 hover:scale-105'}`}>
+               <Package className="w-4 h-4" /> Todo
+             </button>
           </div>
         </div>
       </div>
@@ -155,7 +234,7 @@ export default function Marketplace({ products }: MarketplaceProps) {
         {/* Cuadrícula */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 xl:gap-8">
           {filteredProducts.map((product) => (
-            <Link href={`/marketplace/product/${product.id}`} key={product.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 hover:border-purple-200 transition-all duration-300 group flex flex-col cursor-pointer ring-1 ring-black/5 hover:ring-purple-500/20">
+            <Link href={`/marketplace/product/${product.id}`} key={product.id} className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden hover:shadow-[0_8px_30px_rgb(168,85,247,0.12)] hover:-translate-y-1.5 transition-all duration-300 group flex flex-col cursor-pointer">
               <div className="relative aspect-[4/3] sm:aspect-square bg-gray-50 overflow-hidden flex items-center justify-center">
                 {/* Imagen */}
                 <img
@@ -213,7 +292,7 @@ export default function Marketplace({ products }: MarketplaceProps) {
                       e.stopPropagation();
                       addToCart(product);
                     }}
-                    className="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-[0_4px_14px_0_rgba(168,85,247,0.39)] hover:shadow-[0_6px_20px_rgba(168,85,247,0.23)] text-sm z-10"
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 active:scale-95 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-[0_4px_14px_0_rgba(168,85,247,0.39)] hover:shadow-[0_6px_20px_rgba(168,85,247,0.23)] text-sm z-10"
                   >
                     Agregar
                   </button>

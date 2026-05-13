@@ -35,6 +35,25 @@ export default function AutomationsPage() {
     }
   ]);
 
+  const [newTitle, setNewTitle] = useState('Recuperación Personalizada');
+  const [newChannel, setNewChannel] = useState('📱 WhatsApp');
+  const [newDiscount, setNewDiscount] = useState('15');
+  const [newPrompt, setNewPrompt] = useState('¡Hola! Noté que dejaste algunos artículos en tu carrito. Como nos encantaría verte disfrutar de ellos, aquí tienes un regalo especial...');
+
+  const handleSaveAutomation = () => {
+    const newAutomation = {
+      id: automations.length + 1,
+      title: newTitle,
+      description: newPrompt.substring(0, 50) + '...',
+      type: 'Personalizado',
+      channel: newChannel.includes('WhatsApp') ? 'WhatsApp' : newChannel.includes('Correo') ? 'Email' : 'Ambos',
+      status: true,
+      stats: '0% Conversión',
+    };
+    setAutomations([newAutomation, ...automations]);
+    setIsModalOpen(false);
+  };
+
   const toggleStatus = (id: number) => {
     setAutomations(automations.map(a => a.id === id ? { ...a, status: !a.status } : a));
   };
@@ -123,7 +142,11 @@ export default function AutomationsPage() {
             <div className="p-6 space-y-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 mt-1">Canal de envío</label>
-                <select className="w-full border-gray-300 rounded-xl px-4 py-3 bg-gray-50 border focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all appearance-none cursor-pointer">
+                <select 
+                  value={newChannel}
+                  onChange={(e) => setNewChannel(e.target.value)}
+                  className="w-full border-gray-300 rounded-xl px-4 py-3 bg-gray-50 border focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all appearance-none cursor-pointer"
+                >
                   <option>📱 WhatsApp (Recomendado)</option>
                   <option>✉️ Correo Electrónico</option>
                   <option>🚀 Ambos canales</option>
@@ -136,6 +159,8 @@ export default function AutomationsPage() {
                   <input 
                     type="number" 
                     placeholder="Ej: 15"
+                    value={newDiscount}
+                    onChange={(e) => setNewDiscount(e.target.value)}
                     className="w-full border-gray-300 rounded-xl px-4 py-3 bg-gray-50 border focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
                   />
                   <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
@@ -149,6 +174,8 @@ export default function AutomationsPage() {
                 <label className="block text-sm font-bold text-gray-700 mb-2 mt-1">Mensaje del Asistente (Prompt IA)</label>
                 <textarea 
                   rows={4}
+                  value={newPrompt}
+                  onChange={(e) => setNewPrompt(e.target.value)}
                   className="w-full border-gray-300 rounded-xl px-4 py-3 bg-gray-50 border focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none"
                   placeholder="¡Hola! Noté que dejaste algunos artículos en tu carrito. Como nos encantaría verte disfrutar de ellos, aquí tienes un regalo especial..."
                 ></textarea>
@@ -163,7 +190,7 @@ export default function AutomationsPage() {
                 Cancelar
               </button>
               <button 
-                onClick={() => setIsModalOpen(false)}
+                onClick={handleSaveAutomation}
                 className="bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-bold px-6 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm"
               >
                 <Save className="h-4 w-4" />
