@@ -13,8 +13,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Falta la imagen' }, { status: 400 });
     }
 
-    // Inicializar el modelo visual (gemini-2.5-flash es excelente para tareas rápidas multimodales)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    // Inicializar el modelo visual (gemini-1.5-flash es excelente para tareas rápidas multimodales)
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     // Preparar el prompt
     const prompt = "Analiza esta imagen e identifica qué producto de oficina principal es. Devuelve ÚNICAMENTE UNA o DOS PALABRAS CLAVE descriptivas que sirvan para buscar el producto en una tienda de equipos y mobiliario (ej. 'Silla', 'Monitor', 'Teclado', 'Escritorio', 'Webcam', 'Auriculares', 'Raton', 'Reposamuñecas'). No incluyas signos de puntuación, no incluyas artículos como 'un' o 'el', ni des explicaciones adicionales. Solo las palabras clave limpias.";

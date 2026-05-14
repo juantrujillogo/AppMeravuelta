@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     // Recomendación: usar gemini-1.5-flash para respuestas súper rápidas en chats
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-1.5-flash',
       systemInstruction: `Eres el asistente virtual experto en ventas de SmarcartIA. Tu objetivo es ayudar a los clientes a encontrar productos, responder dudas sobre garantías y tiempos de envío, y motivar la compra de forma muy amable, concisa y persuasiva. 
 
 REGLAS IMPORTANTES:

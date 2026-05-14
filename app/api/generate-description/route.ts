@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Falta el nombre del producto' }, { status: 400 });
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const prompt = `Actúa como un experto copywriter de e-commerce. Genera una descripción de producto atractiva, profesional y persuasiva para el siguiente artículo: "${productName}". 
     La descripción debe tener alrededor de 3 oraciones cortas, resaltando beneficios y características clave sin inventar especificaciones irreales. Solo devuelve el texto de la descripción, sin introducciones ni títulos.`;

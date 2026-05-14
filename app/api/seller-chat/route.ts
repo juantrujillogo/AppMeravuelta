@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-1.5-flash',
       systemInstruction: `Eres el Asistente Privado de Negocios y Analista del dueño de la tienda SmarcartIA. Tu trabajo NO es vender a clientes, sino asesorar al administrador de la tienda.
 
 REGLAS IMPORTANTES:
