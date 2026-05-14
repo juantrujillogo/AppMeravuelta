@@ -5,8 +5,7 @@ const config: CapacitorConfig = {
   appName: 'SmarcartIA',
   webDir: 'public', // Usamos public porque Next.js no exportará out estático
   server: {
-    url: 'http://192.168.1.131:3000',
-    cleartext: true
+    url: 'https://smart-cart-ai-escr-azure.vercel.app'
   }
 };
 
